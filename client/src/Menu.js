@@ -11,19 +11,21 @@ export default class Menu extends React.Component {
     }
 
     componentDidMount() {
-
-        this.setState({
-            latitude: 3,
-            longitude: 4
-          });
-
-        navigator.geolocation.watchPosition((position) => {
-            this.setState({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
-            });
-        });
-      }
+        navigator.geolocation.watchPosition(
+            (position) => {
+                this.setState({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            },
+            () => {
+                this.setState({
+                    latitude: 1,
+                    longitude: 1
+                })
+            }
+        );
+    }
 
     render() {
         return (
