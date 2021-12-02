@@ -6,7 +6,8 @@ export default class Menu extends React.Component {
         super();
         this.state = {
             latitude: 0,
-            longitude: 0
+            longitude: 0,
+            foundValidLocation: false,
         }
     }
 
@@ -15,13 +16,14 @@ export default class Menu extends React.Component {
             (position) => {
                 this.setState({
                     latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
+                    longitude: position.coords.longitude,
+                    foundValidLocation: true,
                 })
             },
-            () => {
+            (error) => {
+                console.log(error);
                 this.setState({
-                    latitude: 1,
-                    longitude: 1
+                    foundValidLocation: false,
                 })
             }
         );
