@@ -21,7 +21,7 @@ export default class Menu extends React.Component {
                 })
             },
             (error) => {
-                console.log(error);
+                console.log(error.message);
                 this.setState({
                     foundValidLocation: false,
                 })
