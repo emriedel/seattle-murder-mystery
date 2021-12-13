@@ -1,0 +1,10 @@
+1a
+You arrive at a mysterious scene
+    Look at the dead body
+        1b
+    Take a shit
+        1c
+
+1b
+Wow, that's a dead body
+
