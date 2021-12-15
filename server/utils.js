@@ -47,22 +47,22 @@ module.exports = {
                     }
         
                     if (sceneId === null) {
-                        sceneId = line;
+                        sceneId = line.trim();
                         continue;
                     }
         
                     if (introText === null) {
-                        introText = line;
+                        introText = line.trim();
                         continue;
                     }
         
                     if (option.text === null) {
-                        option.text = line;
+                        option.text = line.trim();
                         continue;
                     }
 
                     if (option.destination === null) {
-                        option.destionation = line;
+                        option.destination = line.trim();
                         options.push(option);
                         var option = {
                             text : null,

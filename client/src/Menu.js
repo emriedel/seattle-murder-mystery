@@ -2,19 +2,40 @@ import React from "react";
 import "./Menu.css";
 
 function FetchTest(props) {
-    const [data, setData] = React.useState(null);
+    const [data, setData] = React.useState({
+        sceneData: {
+            introText:"",
+            optionsList: [{}]
+        }
+    });
     const encodedLat = encodeURIComponent(props.latitude);
     const encodedLong = encodeURIComponent(props.longitude);
 
     React.useEffect(() => {
-        fetch("/location?lat=" + encodedLat + "&long=" + encodedLong)
+        fetch("/checkLocation?lat=" + encodedLat + "&long=" + encodedLong)
         .then((res) => res.json())
-        .then((data) => setData(data.message));
-    }, []);
+        .then((data) => setData(data));
+    }, [props.latitude, props.longitude]);
 
     return (
-        <p>{!data ? "Loading..." : data}</p>
+        <div>
+            <Scene text={data.sceneData.introText} options={data.sceneData.optionsList} />
+        </div>
     );
+}
+
+function Scene(props) {
+    let options = [];
+    for (let i = 0; i < props.options.length; i++) {
+        options.push(<div data-destionationscene={props.options[i].destination} key={i}>{props.options[i].text}</div>);
+    }
+
+    return (
+        <div>
+            {props.text}
+            {options}
+        </div>
+    )
 }
 
 export default class Menu extends React.Component {

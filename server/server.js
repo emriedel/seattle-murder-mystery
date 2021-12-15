@@ -14,19 +14,35 @@ app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-// Handle GET requests to /api route
-app.get("/location", (req, res) => {
+// Handle GET requests to /checkLocation route
+app.get("/checkLocation", (req, res) => {
 
-  const latitude = req.query.lat
-  const longitude = req.query.long
-  const distance = utils.findDistanceBetweenCoordinates(latitude, longitude, "47.594298", "-122.316559");
+  const latitude = req.query.lat;
+  const longitude = req.query.long;
 
   for (const coordString in app.locals.locationsData) {
-    const coordPair = coordString.split(",")
-    console.log(coordPair);
+    const coordPair = coordString.split(",");
+    var distance = utils.findDistanceBetweenCoordinates(latitude, longitude, coordPair[0], coordPair[1]);
+    if (distance <= 80000) {
+      var scene = app.locals.locationsData[coordString];
+      var sceneData = app.locals.scenesData[scene];
+      res.json({ sceneData: sceneData });
+      break;
+    }
   }
 
-  res.json({ message: "Hello from server!" });
+  if (!res.headersSent) {
+    res.json({ message: "Hello from server!" });
+  }
+});
+
+// Handle GET requests to /getScene route
+app.get("/getScene", (req, res) => {
+
+  const scene = req.query.scene;
+  var sceneData = app.locals.scenesData[scene];
+  res.json({ sceneData: sceneData });
+
 });
 
 // All other GET requests not handled before will return our React app
