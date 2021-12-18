@@ -1,4 +1,12 @@
-.typewriter h1 {
+.optionButton {
+  width: 50%;
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.typewriter,h1 {
   overflow: hidden; /* Ensures the content is not revealed until the animation */
   border-right: .15em solid orange; /* The typwriter cursor */
   white-space: nowrap; /* Keeps the content on a single line */

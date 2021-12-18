@@ -23,17 +23,13 @@ app.get("/checkLocation", (req, res) => {
   for (const coordString in app.locals.locationsData) {
     const coordPair = coordString.split(",");
     var distance = utils.findDistanceBetweenCoordinates(latitude, longitude, coordPair[0], coordPair[1]);
-    if (distance <= 80000) {
+    if (distance <= 800) {
       var scene = app.locals.locationsData[coordString];
-      var sceneData = app.locals.scenesData[scene];
-      res.json({ sceneData: sceneData });
+      res.json({ scene: scene });
       break;
     }
   }
 
-  if (!res.headersSent) {
-    res.json({ message: "Hello from server!" });
-  }
 });
 
 // Handle GET requests to /getScene route

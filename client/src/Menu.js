@@ -1,13 +1,8 @@
 import React from "react";
 import "./Menu.css";
 
-function FetchTest(props) {
-    const [data, setData] = React.useState({
-        sceneData: {
-            introText:"",
-            optionsList: [{}]
-        }
-    });
+function LocationChecker(props) {
+    const [data, setData] = React.useState();
     const encodedLat = encodeURIComponent(props.latitude);
     const encodedLong = encodeURIComponent(props.longitude);
 
@@ -17,22 +12,46 @@ function FetchTest(props) {
         .then((data) => setData(data));
     }, [props.latitude, props.longitude]);
 
+    if (data && data.scene) {
+        props.setSceneToLoad(data.scene);
+    }
+
     return (
-        <div>
-            <Scene text={data.sceneData.introText} options={data.sceneData.optionsList} />
-        </div>
+        <div>There's nothing to find here</div>
     );
 }
 
 function Scene(props) {
+    const [data, setData] = React.useState({
+        sceneData: {
+            introText: "",
+            optionsList: []
+        }
+    });
+
+    React.useEffect(() => {
+        fetch("/getScene?scene=" + props.scene)
+        .then((res) => res.json())
+        .then((data) => setData(data));
+    }, [props.scene]);
+
+    if (!data.sceneData) {
+        return (
+            <div>
+                There's been an error
+            </div>
+        )
+    }
+
     let options = [];
-    for (let i = 0; i < props.options.length; i++) {
-        options.push(<div data-destionationscene={props.options[i].destination} key={i}>{props.options[i].text}</div>);
+    for (let i=0; i < data.sceneData.optionsList.length; i++) {
+        options.push(<div className="optionButton" onClick={() => props.setSceneToLoad(data.sceneData.optionsList[i].destination)}
+            key={i}>{data.sceneData.optionsList[i].text}</div>);
     }
 
     return (
         <div>
-            {props.text}
+            <h1 className="typewriter">{data.sceneData.introText}</h1>
             {options}
         </div>
     )
@@ -46,7 +65,8 @@ export default class Menu extends React.Component {
             latitude: 0,
             longitude: 0,
             foundValidLocation: false,
-            locationMessage: "Finding your location..."
+            locationMessage: "Finding your location...",
+            sceneToLoad: "",
         }
     }
 
@@ -69,13 +89,22 @@ export default class Menu extends React.Component {
         );
     }
 
+    setSceneToLoad(scene) {
+        this.setState({
+            sceneToLoad : scene
+        });
+    }
+
     render() {
 
-        if (this.state.foundValidLocation) {
+        if (this.state.sceneToLoad) {
             return (
-                <div className="typewriter">
-                    <h1>{this.state.latitude}, {this.state.longitude}</h1>
-                    <FetchTest latitude = {this.state.latitude} longitude = {this.state.longitude} />
+                <Scene scene={this.state.sceneToLoad} setSceneToLoad={(scene) => this.setSceneToLoad(scene)} />
+            )
+        } else if (this.state.foundValidLocation) {
+            return (
+                <div>
+                    <LocationChecker latitude={this.state.latitude} longitude={this.state.longitude} setSceneToLoad={(scene) => this.setSceneToLoad(scene)} />
                 </div>
             )
         } else {
